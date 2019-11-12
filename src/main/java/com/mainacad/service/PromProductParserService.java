@@ -32,7 +32,7 @@ public class PromProductParserService extends Thread {
             String name = extractName(productInfo);
             BigDecimal price = extractPrice(productInfo);
             BigDecimal initialPrice = extractInitialPrice(productInfo, price);
-            String imageUrl = extractImageUrl(productInfo);
+            String imageUrl = extractImageUrl(document);
             String availability = extractAvailability(productInfo);
 
             Item item = new Item(itemId, name, url, imageUrl, price, initialPrice, availability);
@@ -67,7 +67,7 @@ public class PromProductParserService extends Thread {
     private BigDecimal extractPrice(Element productInfo) {
         BigDecimal result = null;
         try {
-            String resultAsText = productInfo.getElementsByAttributeValue("data-qaid", "product_price").first().text();
+            String resultAsText = productInfo.getElementsByAttributeValue("data-qaid", "product_price").first().attr("data-qaprice");
             resultAsText = resultAsText.substring(resultAsText.indexOf('H') + 2, resultAsText.length());
             resultAsText = resultAsText.replaceAll("[^0-9,]", "");
             resultAsText = resultAsText.replaceAll("[,]", ".");
@@ -81,7 +81,7 @@ public class PromProductParserService extends Thread {
     private BigDecimal extractInitialPrice(Element productInfo, BigDecimal price) {
         BigDecimal result = price;
         try {
-            String resultAsText = productInfo.getElementsByAttributeValue("data-qaid", "price_without_discount").first().text();
+            String resultAsText = productInfo.getElementsByAttributeValue("data-qaid", "price_without_discount").first().attr("data-qaprice");
             resultAsText = resultAsText.replaceAll("[,]", ".");
             result = new BigDecimal(resultAsText.replaceAll("[^0-9,]", "")).setScale(2, RoundingMode.HALF_UP);
         } catch (Exception e) {
@@ -92,7 +92,14 @@ public class PromProductParserService extends Thread {
 
     //    TODO
     private String extractImageUrl(Element productInfo) {
-        return null;
+        String result = "";
+        try {
+            result = productInfo.getElementsByAttributeValue("property", "og:image").first().attr("content");
+            return result;
+        } catch (Exception e) {
+            LOG.severe(String.format("Item image url by URL %s was not extracted", url));
+        }
+        return result;
     }
 
     private String extractAvailability(Element productInfo) {
