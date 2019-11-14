@@ -2,6 +2,7 @@ package com.mainacad;
 
 import com.mainacad.model.Item;
 import com.mainacad.model.Items;
+import com.mainacad.service.PromNavigationParserService;
 import com.mainacad.service.PromProductParserService;
 import com.mainacad.util.ItemMapper;
 
@@ -32,14 +33,16 @@ public class AppRunner {
         try {
             String keyword = URLEncoder.encode(args[0], "UTF-8");
             String searchUrl = BASE_URL + "/search?search_term=" + keyword;
-            PromProductParserService promProductParserService = new PromProductParserService(items, searchUrl);
-            threads.add(promProductParserService);
-            promProductParserService.start();
+            PromNavigationParserService promNavigationParserService =
+                    new PromNavigationParserService(items, searchUrl, threads);
+            threads.add(promNavigationParserService);
+            promNavigationParserService.start();
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        boolean threadsFinished = false;
+        boolean threadsFinished;
         do {
             try {
                 Thread.sleep(2000);
@@ -47,7 +50,7 @@ public class AppRunner {
                 e.printStackTrace();
             }
             threadsFinished = checkThreads(threads);
-        } while (threadsFinished == false);
+        } while (threadsFinished);
 
         LOG.info("parser finished! " + items.size() + "were extracted");
     }
@@ -66,7 +69,7 @@ public class AppRunner {
 //        if (!items.isEmpty()) {
 //            LOG.info("\n" + items.get(0).toString());
 //        }
-//
+
 //        Item item1 = new Item("111", "name1", "url1", "imageurl1",
 //                new BigDecimal("0.01"), new BigDecimal("0.011"), "availability1");
 //        Item item2 = new Item("222", "name2", "url2", "imageurl2",
@@ -77,7 +80,7 @@ public class AppRunner {
 //
 //        Items itemList = new Items(items);
 //        LOG.info("\n" + ItemMapper.mapToXml(itemList.getListItems()));
-
+//    }
 
     private static boolean checkThreads(List<Thread> threads) {
         for (Thread thread : threads) {

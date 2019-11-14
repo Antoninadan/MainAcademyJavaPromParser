@@ -26,7 +26,7 @@ public class PromProductParserService extends Thread {
     @Override
     public void run() {
         try {
-            Document document = Jsoup.connect(url).get();
+            Document document = Jsoup.connect(url).get(); // proxy
             Element productInfo = document.getElementsByAttributeValue("data-qaid", "main_product_info").first();
             String itemId = extractItemId(productInfo);
             String name = extractName(productInfo);
@@ -90,7 +90,6 @@ public class PromProductParserService extends Thread {
         return result;
     }
 
-    //    TODO
     private String extractImageUrl(Element productInfo) {
         String result = "";
         try {
