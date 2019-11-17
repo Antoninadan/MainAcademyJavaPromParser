@@ -34,7 +34,7 @@ public class AppRunner {
             String keyword = URLEncoder.encode(args[0], "UTF-8");
             String searchUrl = BASE_URL + "/search?search_term=" + keyword;
             PromNavigationParserService promNavigationParserService =
-                    new PromNavigationParserService(items, searchUrl, threads);
+                     new PromNavigationParserService(items, searchUrl, threads);
             threads.add(promNavigationParserService);
             promNavigationParserService.start();
 
