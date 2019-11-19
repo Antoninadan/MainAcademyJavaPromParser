@@ -19,15 +19,15 @@ public class ApplicationSeleniumRunner {
 
     public static void main(String[] args) {
 
-        if (args.length == 0) {
-            LOG.warning("You didnot input any keyword!");
-            return;
-        }
-
-        LOG.info("parser started!");
+//        if (args.length == 0) {
+//            LOG.warning("You didnot input any keyword!");
+//            return;
+//        }
+//
+//        LOG.info("parser started!");
         WebDriver driver = WebDriverFactory.getChromeDriver();
 
-        Account account = new Account("Petya", "12345", "Alex", "Bond", "pet1234dgs@ukr.net");
+        Account account = new Account("Petya", "12345", "Alex", "Bond", "5145234dgs@ukr.net");
         driver = PromAccountService.registerAccount(account,driver);
 
         driver.quit();
