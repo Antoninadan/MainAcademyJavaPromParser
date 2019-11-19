@@ -20,6 +20,8 @@
         <lombok.version>1.18.8</lombok.version>
         <jsoup.version>1.11.3</jsoup.version>
         <jaxb.version>2.3.1</jaxb.version>
+        <selenium.version>3.141.59</selenium.version>
+
     </properties>
 
     <dependencies>
@@ -69,6 +71,27 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.2</version>
+        </dependency>
+
+        <!--        SELENUIM JAVA-->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+
+        <!--        SELENIUM SERVER-->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+
+        <!--        SELENIUM DRIVER-->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>${selenium.version}</version>
         </dependency>
 
     </dependencies>
