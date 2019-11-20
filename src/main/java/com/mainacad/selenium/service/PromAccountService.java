@@ -1,6 +1,5 @@
 package com.mainacad.selenium.service;
 
-import com.mainacad.AppRunner;
 import com.mainacad.selenium.model.Account;
 import com.mainacad.util.Timer;
 import org.openqa.selenium.By;
@@ -9,11 +8,11 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class PromAccountService {
     private static final Logger LOG = Logger.getLogger(PromAccountService.class.getName());
     private static final String REG_URL = "https://prom.ua/join-customer";
+    private static final String MAIN_URL = "https://prom.ua";
 //    private static final String REG_URL = "https://my.prom.ua/cabinet/user/settings";
 
     public static WebDriver registerAccount(Account account, WebDriver driver) {
@@ -65,66 +64,63 @@ public class PromAccountService {
         driver.get(currentUrl);
         Timer.waitSeconds(2);
 
-
-
-        // continue
-        WebElement profileForm = driver.findElement(By.className("b-form"));
-        WebElement fisrtNameBlock = profileForm.findElement(By.name("first_name_block"));
-        WebElement fisrtNameInput = fisrtNameBlock.findElement(By.tagName("input"));
-        fisrtNameInput.sendKeys(account.getFirstName());
-
-
-//        List<WebElement> inputsProfile = driver.findElements(By.tagName("input"));
-////        if (profileForm == null) {
-////            LOG.info("Personal data form was not found!");
-////            return driver;
-////        }
-//        for (WebElement inputsProfile : inputs) {
-//
-//        }
-//
-//
-//        List<WebElement> blocks = profileForm.findElements(By.className("b-form-unit"));
-//        for (WebElement block : blocks) {
-//            if (block.getAttribute("data-qaid").equals("first_name_block")) {
-//                List<WebElement> inputsProfile = block.findElements(By.tagName("input"));
-//                for (WebElement input : inputsProfile) {
-//                    if (input.getAttribute("data-qaid") != null && input.getAttribute("data-qaid").equals("input_field")) {
-//                        input.sendKeys(account.getFirstName());
-//                    }
-//                }
-//            }}
-
-//
-//        List<WebElement> inputsProfile = profileForm.findElements(By.tagName("input"));
-//        WebElement firstNameBlock = profileForm.getAttribute("first_name_block");
-
-            Timer.waitSeconds(4);
-//        for (WebElement input : inputsProfile) {
-//            if (input.getAttribute("data-qaid") != null && input.getAttribute("data-qaid").equals("first_name_block")) {
-//                input.sendKeys(account.getFirstName());
-//            }
-//            if (input.getAttribute("data-qaid") != null && input.getAttribute("data-qaid").equals("last_name_block")) {
-//                input.sendKeys(account.getSecondName());
-//            }
-//        }
-            Timer.waitSeconds(2);
-            List<WebElement> buttonsProfile = profileForm.findElements(By.tagName("button"));
-            for (WebElement button : buttonsProfile) {
-                if (button.getAttribute("data-qaid") != null && button.getAttribute("data-qaid").equals("save_profile")) {
-                    button.submit();
+        // continue fill profile
+        List<WebElement> personalFormElements = driver.findElements(By.tagName("div"));
+        boolean secondNameConfirmed = false;
+        for (WebElement element : personalFormElements) {
+            if (element.getAttribute("data-qaid") != null &&
+                    element.getAttribute("data-qaid").equals("Last_name_block")) {
+                List<WebElement> webElement = element.findElements(By.tagName("input"));
+                if (!webElement.isEmpty()) {
+                    webElement.get(0).sendKeys(account.getSecondName());
+                    secondNameConfirmed = true;
                     break;
                 }
             }
-
-            Timer.waitSeconds(3);
-//            String currentUrlProfile = driver.getCurrentUrl();
-//            driver.get(currentUrlProfile);
-//            Timer.waitSeconds(2);
-
-            return driver;
-
         }
 
+        List<WebElement> nickNameElements = driver.findElements(By.tagName("input"));
+        for (WebElement element : nickNameElements) {
+            if (element.getAttribute("data-qaid") != null &&
+                    element.getAttribute("data-qaid").equals("nickname_input")) {
+                element.sendKeys(account.getLogin());
+                break;
+            }
+        }
 
+        if (secondNameConfirmed) {
+            List<WebElement> buttonElements = driver.findElements(By.tagName("button"));
+            for (WebElement element : buttonElements) {
+                if (element.getAttribute("data-qaid") != null &&
+                        element.getAttribute("data-qaid").equals("save_profile")) {
+                    Timer.waitSeconds(3);
+                    element.click();
+                    break;
+                }
+            }
+            Timer.waitSeconds(2);
+            currentUrl = driver.getCurrentUrl();
+            driver.get(currentUrl);
+            Timer.waitSeconds(2);
+        }
+        return driver;
     }
+
+    public static WebDriver checkRegisteredUser(Account account, WebDriver driver) {
+        driver.get(MAIN_URL);
+        Timer.waitSeconds(3);
+        List<WebElement> regElements = driver.findElements(By.tagName("span"));
+        for (WebElement element : regElements) {
+            if (element.getAttribute("data-qaid") != null &&
+                    element.getAttribute("data-qaid").equals("reg_element")) {
+
+                String text = element.getText();
+                if (text.contains(account.getFirstName()) && text.contains(account.getSecondName()))
+                    Timer.waitSeconds(3);
+                return driver;
+            }
+        }
+        driver.quit();
+        return null;
+    }
+}

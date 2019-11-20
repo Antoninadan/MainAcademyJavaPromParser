@@ -28,10 +28,19 @@ public class ApplicationSeleniumRunner {
         WebDriver driver = WebDriverFactory.getChromeDriver();
 
         Account account = new Account("Petya", "12345", "Alex", "Bond",
-                "5jhdf5fdd9rtgs@ukr.net");
+                "5jhdf5469rtgs@ukr.net");
         driver = PromAccountService.registerAccount(account,driver);
+        driver = PromAccountService.checkRegisteredUser(account, driver);
+        if (driver == null) {
+            LOG.warning("Account was not registred");
+        } else {
+            LOG.info("Account was registred");
+            driver.quit();
+        }
 
         driver.quit();
+
+        LOG.info(account.toString());
     }
 
 }
