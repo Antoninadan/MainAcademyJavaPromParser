@@ -27,7 +27,7 @@ public class ApplicationSeleniumRunner {
 //        LOG.info("parser started!");
         WebDriver driver = WebDriverFactory.getChromeDriver();
 
-        Account account = new Account("Petya", "12345", "Alex", "Bond", "5145234dgs@ukr.net");
+        Account account = new Account("Petya", "12345", "Alex", "Bond", "5jhdf5d9gs@ukr.net");
         driver = PromAccountService.registerAccount(account,driver);
 
         driver.quit();
