@@ -60,29 +60,40 @@ public class PromAccountService {
                 break;
             }
         }
-
         Timer.waitSeconds(3);
         String currentUrl = driver.getCurrentUrl();
         driver.get(currentUrl);
         Timer.waitSeconds(2);
 
+
+
         // continue
         WebElement profileForm = driver.findElement(By.className("b-form"));
-        if (profileForm == null) {
-            LOG.info("Personal data form was not found!");
-            return driver;
-        }
+        WebElement fisrtNameBlock = profileForm.findElement(By.name("first_name_block"));
+        WebElement fisrtNameInput = fisrtNameBlock.findElement(By.tagName("input"));
+        fisrtNameInput.sendKeys(account.getFirstName());
 
-        List<WebElement> blocks = profileForm.findElements(By.className("b-form-unit"));
-        for (WebElement block : blocks) {
-            if (block.getAttribute("data-qaid").equals("first_name_block")) {
-                List<WebElement> inputsProfile = block.findElements(By.tagName("input"));
-                for (WebElement input : inputsProfile) {
-                    if (input.getAttribute("data-qaid") != null && input.getAttribute("data-qaid").equals("input_field")) {
-                        input.sendKeys(account.getFirstName());
-                    }
-                }
-            }}
+
+//        List<WebElement> inputsProfile = driver.findElements(By.tagName("input"));
+////        if (profileForm == null) {
+////            LOG.info("Personal data form was not found!");
+////            return driver;
+////        }
+//        for (WebElement inputsProfile : inputs) {
+//
+//        }
+//
+//
+//        List<WebElement> blocks = profileForm.findElements(By.className("b-form-unit"));
+//        for (WebElement block : blocks) {
+//            if (block.getAttribute("data-qaid").equals("first_name_block")) {
+//                List<WebElement> inputsProfile = block.findElements(By.tagName("input"));
+//                for (WebElement input : inputsProfile) {
+//                    if (input.getAttribute("data-qaid") != null && input.getAttribute("data-qaid").equals("input_field")) {
+//                        input.sendKeys(account.getFirstName());
+//                    }
+//                }
+//            }}
 
 //
 //        List<WebElement> inputsProfile = profileForm.findElements(By.tagName("input"));
@@ -107,9 +118,9 @@ public class PromAccountService {
             }
 
             Timer.waitSeconds(3);
-            String currentUrlProfile = driver.getCurrentUrl();
-            driver.get(currentUrlProfile);
-            Timer.waitSeconds(2);
+//            String currentUrlProfile = driver.getCurrentUrl();
+//            driver.get(currentUrlProfile);
+//            Timer.waitSeconds(2);
 
             return driver;
 
